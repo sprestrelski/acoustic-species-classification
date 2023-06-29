@@ -7,9 +7,9 @@ import sys
 #       We believe the differences are negligable, wo we'll 
 #       ignore it.
 
-metadata_file = "train_metadata.csv"
-binary_labels_file = "BirdCLEF2023_TweetyNet_Labels.csv"
-strong_labels_file = "BirdCLEF2023_Strong_Labels.csv"
+metadata_file = "/mnt/passive-acoustic-biodiversity/132_peru_xc_BC_2020/metadata.csv"
+binary_labels_file = "132PeruXC_TweetyNet_Labels.csv"
+strong_labels_file = "132PeruXC_Strong_Labels.csv"
 
 def attach_labels(path, replace_file=False, new_file_name=strong_labels_file):
 

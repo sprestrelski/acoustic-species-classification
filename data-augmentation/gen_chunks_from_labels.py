@@ -4,21 +4,24 @@ import pydub
 import pandas as pd
 from WTS_chunking import *
 
+tweetynet_chunks = '132PeruXC_TweetyNet_Chunks.csv'
+strong_labels = '132PeruXC_Strong_Labels.csv'
+output_folder = '132PeruXC_train_chunks'
 
 def generate_chunked_df(path, save_chunks=True):
-  unchunked_df = pd.read_csv(os.path.join(path, 'BirdCLEF2023_Strong_Labels.csv'))
+  unchunked_df = pd.read_csv(os.path.join(path, strong_labels))
   chunked_df = dynamic_yan_chunking(unchunked_df, chunk_count=5, chunk_duration=5, only_slide=False)
   if save_chunks:
-      chunked_df.to_csv(os.path.join(path, 'BirdCLEF2023_TweetyNet_Chunks.csv'))
+      chunked_df.to_csv(os.path.join(path, tweetynet_chunks))
   return chunked_df
 
 
 def generate_wavs_from_chunks(path, chunk_duration):
-  chunk_path = os.path.join(path, 'BirdCLEF2023_train_audio_chunks')
+  chunk_path = os.path.join(path, output_folder)
   if not os.path.exists(chunk_path):
      os.makedirs(chunk_path)
 
-  chunked_df = pd.read_csv(os.path.join(path, 'BirdCLEF2023_TweetyNet_Chunks.csv'))
+  chunked_df = pd.read_csv(os.path.join(path, tweetynet_chunks))
   file_name = ''
   label = ''
   folder_path = ''
@@ -43,7 +46,7 @@ def generate_wavs_from_chunks(path, chunk_duration):
     if row['IN FILE'] != file_name:
         
       file_name = row['IN FILE']
-      wave_file_path = os.path.join(path, 'train_audio', label, file_name)
+      wave_file_path = os.path.join(path, label, file_name)
       wav_file = pydub.AudioSegment.from_wav(wave_file_path)
       chunk_count = 1
 
@@ -64,7 +67,7 @@ def generate_wavs_from_chunks(path, chunk_duration):
 
 
 def delete_chunks_with_len(path, length):
-  chunk_path = os.path.join(path, 'BirdCLEF2023_train_audio_chunks')
+  chunk_path = os.path.join(path, output_folder)
   length *= 1000
   subfolders = [f.path for f in os.scandir(chunk_path) if f.is_dir() ]   
   for subfolder in subfolders:
